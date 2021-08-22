@@ -1,0 +1,25 @@
+
+
+#navigation{
+	margin:0;
+	height:60px; 
+    border:1px ridge crimson;
+    text-align: center;
+
+}
+.navigation_item{
+	display:inline-block;
+	
+	
+	
+} 
+
+
+
+
+
+.section_1{
+	margin:0; 
+	border:1px solid crimson;
+
+}
