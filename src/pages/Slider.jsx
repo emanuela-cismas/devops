@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import PetsImage from "./animals.png";
+import PetsImage from "../resources/animals.png";
+
 const Container = styled.div`
   width: 100%;
   height: 500px;

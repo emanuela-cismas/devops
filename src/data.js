@@ -1,7 +1,7 @@
-import cat from "../src/pages/cats.png";
-import dog from "../src/pages/dogs.png";
-import rodent from "../src/pages/rodents.png";
-import reptile from "../src/pages/reptiles.png";
+import cat from "./resources/cats.png";
+import dog from "./resources/dogs.png";
+import rodent from "./resources/rodents.png";
+import reptile from "./resources/reptiles.png";
 export const categories = [
   {
     id: 1,
