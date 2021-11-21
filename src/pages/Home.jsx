@@ -1,5 +1,5 @@
 import React from "react";
-import { Categories } from "./Categories";
+import Categories from "./Categories";
 import NavBar from "./NavBar";
 import Slider from "./Slider";
 import styled from "styled-components";

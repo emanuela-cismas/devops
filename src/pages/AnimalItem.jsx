@@ -26,12 +26,12 @@ const Title = styled.h1`
   cursor: pointer;
 `;
 
-export const ProductItem = ({ item }) => {
+export const AnimalItem = ({ item }) => {
   return (
     <Container>
       <Info>
-        <Image src={item.image} />
-        <Title>{item.description}</Title>
+        {/* <Image src={item.image} /> */}
+        <Title>{item.name}</Title>
       </Info>
     </Container>
   );

@@ -149,7 +149,7 @@ export default function Login()
                 onClick={loginUser}
             >Log In</Button>
           </form>
-          <Link>Create an account!</Link>
+          <Link a href="/register">Create an account!</Link>
           </Icon>
         </center>
         {

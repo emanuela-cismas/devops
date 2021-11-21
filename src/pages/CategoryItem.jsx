@@ -1,5 +1,7 @@
-import styled from "styled-components";
 import React from "react";
+import styled from "styled-components";
+import { useHistory } from 'react-router-dom';
+
 const Container = styled.div`
   border: teal solid 10px;
   border-radius: 15px;
@@ -15,7 +17,6 @@ const Image = styled.img`
   width: 300px;
   background-color: white;
 `;
-
 const Info = styled.div`
   text-align: centre;
 `;
@@ -25,12 +26,21 @@ const Title = styled.h1`
   border-radius: 70px;
   cursor: pointer;
 `;
+
 export const CategoryItem = ({ item }) => {
+  const history = useHistory();
+  const goToCategory = (categoryId) =>
+  {
+    console.log("Accessed category");
+    localStorage.setItem("selectedCategory", JSON.stringify(categoryId));
+    history.push(`/animals/${categoryId}`);
+  }
+
   return (
-    <Container>
+    <Container onClick={() => goToCategory(item.id)} >
       <Info>
-        <Image src={item.url} />
-        <Title>{item.species}</Title>
+        <Image src={item.url}/>
+          <Title>{item.species}</Title>
       </Info>
     </Container>
   );
