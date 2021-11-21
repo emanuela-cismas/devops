@@ -6,6 +6,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import { faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
+import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`
   height: 80px;
@@ -68,6 +69,7 @@ const MenuIcon = styled.div`
 `;
 
 export const NavBar = () => {
+  const history = useHistory();
   return (
     <Container>
       <Wrapper>
@@ -88,13 +90,13 @@ export const NavBar = () => {
           </Logo>
         </Center>
         <RightSide>
-          <MenuItem>
+          <MenuItem onClick={ () => { history.push("/register"); } }>
             <MenuIcon>
               <FontAwesomeIcon icon={faUser} />
             </MenuIcon>
             Register
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={ () => { history.push("/login"); } }>
             <MenuIcon>
               <FontAwesomeIcon icon={faSignInAlt} />
             </MenuIcon>

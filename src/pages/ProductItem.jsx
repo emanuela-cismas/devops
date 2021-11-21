@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React from "react";
+
 const Container = styled.div`
   border: teal solid 10px;
   border-radius: 15px;
@@ -24,6 +25,7 @@ const Title = styled.h1`
   border-radius: 70px;
   cursor: pointer;
 `;
+
 export const ProductItem = ({ item }) => {
   return (
     <Container>
