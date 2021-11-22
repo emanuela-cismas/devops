@@ -1,7 +1,9 @@
 import cat from "./resources/cats.png";
 import dog from "./resources/dogs.png";
 import rodent from "./resources/rodents.png";
-import reptile from "./resources/reptiles.png";
+import exotic from "./resources/reptiles.png";
+import fish from "./resources/fish.png";
+// import birds from "./resources/birds.png";
 
 export const categoriesData = [
   {
@@ -21,17 +23,18 @@ export const categoriesData = [
   },
   {
     id: 3,
-    url: reptile,
-    species: "Birds",
-  },
-  {
-    id: 4,
-    url: reptile,
+    url: fish,
     species: "Fish",
   },
   {
-    id: 5,
-    url: reptile,
+    id: 4,
+    url: exotic,
     species: "Exotic pets",
   }
+  // },
+  // {
+  //   id: 5,
+  //   url: birds,
+  //   species: "Birds",
+  // },
 ];

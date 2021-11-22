@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaw } from "@fortawesome/free-solid-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
-import { faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
+import { faPaw, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSignInAlt, faSignOutAlt, faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { changeLogin, changeRole } from '../actions/actions';
+import { useDispatch } from 'react-redux';
 
 const Container = styled.div`
   height: 80px;
@@ -69,7 +69,16 @@ const MenuIcon = styled.div`
 `;
 
 export const NavBar = () => {
+  const dispatch = useDispatch();
+  const isLogged = useSelector(state => state.isLogged);
   const history = useHistory();
+  const handleLogOut = () =>
+  {
+    dispatch(changeLogin(false));
+    dispatch(changeRole(false));
+    history.push("/login");
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -90,18 +99,29 @@ export const NavBar = () => {
           </Logo>
         </Center>
         <RightSide>
-          <MenuItem onClick={ () => { history.push("/register"); } }>
-            <MenuIcon>
-              <FontAwesomeIcon icon={faUser} />
-            </MenuIcon>
-            Register
-          </MenuItem>
-          <MenuItem onClick={ () => { history.push("/login"); } }>
-            <MenuIcon>
-              <FontAwesomeIcon icon={faSignInAlt} />
-            </MenuIcon>
-            Sign In
-          </MenuItem>
+          {
+          (!isLogged?
+          (<React.Fragment>
+            <MenuItem onClick={ () => { history.push("/register"); } }>
+              <MenuIcon>
+                <FontAwesomeIcon icon={faUser} />
+              </MenuIcon>
+              Register
+            </MenuItem>
+            <MenuItem onClick={ () => { history.push("/login"); } }>
+              <MenuIcon>
+                <FontAwesomeIcon icon={faSignInAlt} />
+              </MenuIcon>
+              Sign In
+            </MenuItem>
+          </React.Fragment>):
+            <MenuItem onClick={handleLogOut}>
+              <MenuIcon>
+                <FontAwesomeIcon icon={faSignOutAlt} />
+              </MenuIcon>
+              Sign out
+            </MenuItem>
+          )}
           <MenuItem>
             <MenuIcon>
               <FontAwesomeIcon icon={faClipboardCheck} />
