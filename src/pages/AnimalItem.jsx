@@ -8,13 +8,13 @@ const Container = styled.div`
   background-color: teal;
   margin-right: 30px;
 `;
-const Image = styled.img`
-  border: teal solid 10px;
-  border-radius: 80px;
-  height: 350px;
-  width: 300px;
-  background-color: white;
-`;
+// const Image = styled.img`
+//   border: teal solid 10px;
+//   border-radius: 80px;
+//   height: 350px;
+//   width: 300px;
+//   background-color: white;
+// `;
 
 const Info = styled.div`
   text-align: centre;

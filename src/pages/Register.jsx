@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import icon from "../resources/paw..png";
 import { useHistory } from "react-router-dom";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { sha256 } from "js-sha256";
-import { changeLogin, changeRole, changeUserId } from "../actions/actions";
-import { useDispatch } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import axios from "axios";
 
@@ -48,60 +46,103 @@ const Button = styled.button`
   border: teal solid 4px;
   cursor: pointer;
 `;
-// const Widget = styled.div`
-//   width: 250px;
-//   height: 50px;
-//   display: flex;
-//   font-size: 16px;
-//   justify-content: flex-end;
-//   padding: 0 5px 0 5px;
-// `;
-const Link = styled.a`
-  text-align: center;
-  cursor: pointer;
-`;
+
 
 export default function Register() {
-  const dispatch = useDispatch();
   const history = useHistory();
   const [errorMessage, setErrorMessage] = React.useState(false);
-  const [loginInfo, setLoginInfo] = React.useState({
+  const [success, setSuccess] = React.useState(false);
+  const [userData, setUserData] = React.useState({
     username: "",
     password: "",
+    confirm_password: "",
+    name: "",
+    surname: "",
+    country: "", 
+    city: "",
+    phone: "0", 
+    email: "",
+    hashedPassword: ""
   });
 
   const handleChangeValue = (event) => {
     const { name, value } = event.target;
-    setLoginInfo((prevState) => ({
+    setUserData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
     setErrorMessage(false);
   };
 
-  const loginUser = async (e) => {
+  useEffect(() =>{
+    const hashPassword = () =>
+    {
+      const hashedPassword = sha256(userData.password);
+      setUserData((prevState) => ({
+        ...prevState,
+        "hashedPassword": hashedPassword,
+      }));
+      console.log(userData.hashedPassword);
+    }
+    if (userData)
+      hashPassword();
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData.password]);
+
+  const handleCreateAccount = async (e) =>
+  {
     e.preventDefault();
-    if (loginInfo.username === "" || loginInfo.password === "") {
+    // check for empty data
+    if (userData.username === "" || userData.password === "" || userData.confirm_password === "" || 
+      userData.name === "" ||  userData.surname === "" || userData.country === "" || 
+      userData.city === "" || userData.phone === "" || userData.email === "" ||
+      userData.password !== userData.confirm_password)
+    {
       setErrorMessage(true);
       return;
     }
-    try {
-      const hashedPassword = sha256(loginInfo.password);
-      const checkUserURL = `http://localhost:3001/CheckUser/${loginInfo.username}&${hashedPassword}`;
+
+    // check if username is in use
+    const usernameInUse = async (username) =>
+    {
+      const checkUserURL = `http://localhost:3001/CheckUser/${username}`;
       const response = await axios.get(checkUserURL);
       var userData = response.data;
+      return userData[0] !== undefined;
+    };
+  
+    const result = await usernameInUse(userData.username);
+    if (result)
+    {
+      setErrorMessage(true);
+      return;
+    }
 
-      if (userData[0] !== undefined) {
-        dispatch(changeUserId(userData[0].id));
-        dispatch(changeLogin(true));
-        dispatch(changeRole(userData[0].type === 1 ? true : false));
-        history.push("/home");
-      } else {
-        setErrorMessage(true);
-        return;
-      }
-    } catch (err) {
-      console.log(err.response.data);
+    let mailData = 
+    { 
+      email: userData.email,
+      subject: "Notification for registration",
+      message: ""
+    };
+    mailData.message = "Hello, "+userData.name+ " thank you for registering at Adopt Don't Shop."+
+        "</br> Use the following password to log in : " + userData.password;
+
+    let res = await axios.post('http://localhost:3001/AddUser', userData);
+    if (res.data.result === "failed")
+    {
+      setErrorMessage(true);
+    }
+    
+    let resMail = await axios.post('http://localhost:3001/SendMail', mailData);
+    if (!resMail)
+    {
+      setErrorMessage(true);
+    }
+    else 
+    {
+      setSuccess(true);
+      setTimeout(() => {  history.push("/login"); }, 500);
     }
   };
 
@@ -115,67 +156,91 @@ export default function Register() {
             <Input
               placeholder="Name "
               id="name"
-              name="username"
+              name="name"
               required
               type="text"
+              onChange={handleChangeValue}
+              value={userData.name}
             ></Input>
             <Input
               placeholder="Surname "
               id="surname"
-              name="username"
+              name="surname"
               required
               autoFocus
               type="text"
+              onChange={handleChangeValue}
+              value={userData.surname}
             ></Input>
             <Input
               placeholder="City "
               id="city"
-              name="username"
+              name="city"
               required
               autoFocus
               type="text"
+              onChange={handleChangeValue}
+              value={userData.city}
             ></Input>
             <Input
               placeholder="Country "
               id="country"
-              name="username"
+              name="country"
               required
               autoFocus
               type="text"
+              onChange={handleChangeValue}
+              value={userData.country}
             ></Input>
             <Input
               placeholder="Phone number "
               id="phone"
-              name="username"
+              name="phone"
               required
               autoFocus
               type="tel"
+              onChange={handleChangeValue}
+              value={userData.phone}
             ></Input>
             <Input
               placeholder="email@example.com"
               id="email"
-              name="username"
+              name="email"
               required
               autoFocus
               type="email"
+              onChange={handleChangeValue}
+              value={userData.email}
+            ></Input>
+           <Input
+              placeholder="Username "
+              id="username"
+              name="username"
+              required
+              autoFocus
+              type="text"
+              onChange={handleChangeValue}
+              value={userData.username}
             ></Input>
             <Input
               placeholder="Password "
-              type="password"
               id="password"
               name="password"
               required
               autoFocus
               type="password"
+              onChange={handleChangeValue}
+              value={userData.password}
             ></Input>
             <Input
               placeholder="Confirm password "
-              type="password"
-              id="confirm-password"
-              name="password"
+              id="confirm_password" 
+              name="confirm_password"
               required
               autoFocus
               type="password"
+              onChange={handleChangeValue}
+              value={userData.confirm_password}
             ></Input>
 
             <Button
@@ -183,7 +248,7 @@ export default function Register() {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={loginUser}
+              onClick={handleCreateAccount}
             >
               Create an account
             </Button>
@@ -202,8 +267,20 @@ export default function Register() {
         >
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
-            Login error, <strong>wrong username or password ! </strong>
+            Registration error, <strong>empty fiels, password don't match or username already in use ! </strong>
           </Alert>
+        </Snackbar>
+      }
+      {
+       <Snackbar open={success} 
+          autoHideDuration={2000} 
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          onClose={() => { setSuccess(false); }}
+          key={'bottom left' }>
+        <Alert severity="success">
+        <AlertTitle>Success</AlertTitle>
+          Request sent with success, please check your email !!
+        </Alert>
         </Snackbar>
       }
     </Container>

@@ -18,7 +18,7 @@ const Container = styled.div`
 
 export default function Animals() 
 {
-  const [categoryId, setCategoryId] = React.useState(JSON.parse(localStorage.getItem("selectedCategory")));
+  const [categoryId] = React.useState(JSON.parse(localStorage.getItem("selectedCategory")));
   const [petsData, setPetsData] = React.useState([]);
 
   useEffect(() => {
