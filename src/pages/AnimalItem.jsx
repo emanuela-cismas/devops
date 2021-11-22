@@ -31,7 +31,13 @@ export const AnimalItem = ({ item }) => {
     <Container>
       <Info>
         {/* <Image src={item.image} /> */}
-        <Title>{item.name}</Title>
+        <Title>{item.name}</Title> 
+        <br/>
+        <p>Age: {item.age} months</p>
+        <br/>
+        <p>Preferred food: {item.food_preferred}</p>
+        <br/>
+        <p>Adoption fee: {item.adoption_fee} RON</p> 
       </Info>
     </Container>
   );
