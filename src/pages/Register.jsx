@@ -8,11 +8,11 @@ import Snackbar from "@material-ui/core/Snackbar";
 import axios from "axios";
 
 const Container = styled.div`
-  overflow: auto;
+  overflow: scroll;
 `;
 const Icon = styled.div`
   width: 400px;
-  height: 1050px;
+  height: 1100px;
   border: teal solid 10px;
   border-radius: 30px;
   background-color: teal;
@@ -47,7 +47,6 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-
 export default function Register() {
   const history = useHistory();
   const [errorMessage, setErrorMessage] = React.useState(false);
@@ -58,11 +57,11 @@ export default function Register() {
     confirm_password: "",
     name: "",
     surname: "",
-    country: "", 
+    country: "",
     city: "",
-    phone: "0", 
+    phone: "0",
     email: "",
-    hashedPassword: ""
+    hashedPassword: "",
   });
 
   const handleChangeValue = (event) => {
@@ -74,75 +73,78 @@ export default function Register() {
     setErrorMessage(false);
   };
 
-  useEffect(() =>{
-    const hashPassword = () =>
-    {
+  useEffect(() => {
+    const hashPassword = () => {
       const hashedPassword = sha256(userData.password);
       setUserData((prevState) => ({
         ...prevState,
-        "hashedPassword": hashedPassword,
+        hashedPassword: hashedPassword,
       }));
       console.log(userData.hashedPassword);
-    }
-    if (userData)
-      hashPassword();
+    };
+    if (userData) hashPassword();
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData.password]);
 
-  const handleCreateAccount = async (e) =>
-  {
+  const handleCreateAccount = async (e) => {
     e.preventDefault();
     // check for empty data
-    if (userData.username === "" || userData.password === "" || userData.confirm_password === "" || 
-      userData.name === "" ||  userData.surname === "" || userData.country === "" || 
-      userData.city === "" || userData.phone === "" || userData.email === "" ||
-      userData.password !== userData.confirm_password)
-    {
+    if (
+      userData.username === "" ||
+      userData.password === "" ||
+      userData.confirm_password === "" ||
+      userData.name === "" ||
+      userData.surname === "" ||
+      userData.country === "" ||
+      userData.city === "" ||
+      userData.phone === "" ||
+      userData.email === "" ||
+      userData.password !== userData.confirm_password
+    ) {
       setErrorMessage(true);
       return;
     }
 
     // check if username is in use
-    const usernameInUse = async (username) =>
-    {
+    const usernameInUse = async (username) => {
       const checkUserURL = `http://localhost:3001/CheckUser/${username}`;
       const response = await axios.get(checkUserURL);
       var userData = response.data;
       return userData[0] !== undefined;
     };
-  
+
     const result = await usernameInUse(userData.username);
-    if (result)
-    {
+    if (result) {
       setErrorMessage(true);
       return;
     }
 
-    let mailData = 
-    { 
+    let mailData = {
       email: userData.email,
       subject: "Notification for registration",
-      message: ""
+      message: "",
     };
-    mailData.message = "Hello, "+userData.name+ " thank you for registering at Adopt Don't Shop."+
-        "</br> Use the following password to log in : " + userData.password;
+    mailData.message =
+      "Hello, " +
+      userData.name +
+      " thank you for registering at Adopt Don't Shop." +
+      "</br> Use the following password to log in : " +
+      userData.password;
 
-    let res = await axios.post('http://localhost:3001/AddUser', userData);
-    if (res.data.result === "failed")
-    {
+    let res = await axios.post("http://localhost:3001/AddUser", userData);
+    if (res.data.result === "failed") {
       setErrorMessage(true);
     }
-    
-    let resMail = await axios.post('http://localhost:3001/SendMail', mailData);
-    if (!resMail)
-    {
+
+    let resMail = await axios.post("http://localhost:3001/SendMail", mailData);
+    if (!resMail) {
       setErrorMessage(true);
-    }
-    else 
-    {
+    } else {
       setSuccess(true);
-      setTimeout(() => {  history.push("/login"); }, 500);
+      setTimeout(() => {
+        history.push("/login");
+      }, 500);
     }
   };
 
@@ -212,7 +214,7 @@ export default function Register() {
               onChange={handleChangeValue}
               value={userData.email}
             ></Input>
-           <Input
+            <Input
               placeholder="Username "
               id="username"
               name="username"
@@ -234,7 +236,7 @@ export default function Register() {
             ></Input>
             <Input
               placeholder="Confirm password "
-              id="confirm_password" 
+              id="confirm_password"
               name="confirm_password"
               required
               autoFocus
@@ -267,20 +269,27 @@ export default function Register() {
         >
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
-            Registration error, <strong>empty fiels, password don't match or username already in use ! </strong>
+            Registration error,{" "}
+            <strong>
+              empty fiels, password don't match or username already in use !{" "}
+            </strong>
           </Alert>
         </Snackbar>
       }
       {
-       <Snackbar open={success} 
-          autoHideDuration={2000} 
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          onClose={() => { setSuccess(false); }}
-          key={'bottom left' }>
-        <Alert severity="success">
-        <AlertTitle>Success</AlertTitle>
-          Request sent with success, please check your email !!
-        </Alert>
+        <Snackbar
+          open={success}
+          autoHideDuration={2000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          onClose={() => {
+            setSuccess(false);
+          }}
+          key={"bottom left"}
+        >
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            Request sent with success, please check your email !!
+          </Alert>
         </Snackbar>
       }
     </Container>

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import React from "react";
+import styled from 'styled-components';
+import React from 'react';
 
 const Container = styled.div`
   border: teal solid 10px;
@@ -31,13 +31,15 @@ export const AnimalItem = ({ item }) => {
     <Container>
       <Info>
         {/* <Image src={item.image} /> */}
-        <Title>{item.name}</Title> 
-        <br/>
+        <Title>{item.name}</Title>
+        <br />
         <p>Age: {item.age} months</p>
-        <br/>
+        <br />
         <p>Preferred food: {item.food_preferred}</p>
-        <br/>
-        <p>Adoption fee: {item.adoption_fee} RON</p> 
+        <br />
+        <p>Adoption fee: {item.adoption_fee} RON</p>
+        <br />
+        <button>Adopt</button>
       </Info>
     </Container>
   );
