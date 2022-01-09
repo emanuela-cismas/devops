@@ -134,7 +134,9 @@ export const NavBar = () => {
               Sign out
             </MenuItem>
           )}
-          <MenuItem>
+          <MenuItem onClick={() => {
+              history.push('/appointments');
+            }}>
             <MenuIcon>
               <FontAwesomeIcon icon={faClipboardCheck} />
             </MenuIcon>

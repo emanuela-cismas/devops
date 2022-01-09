@@ -61,7 +61,7 @@ export default function Register() {
     city: "",
     phone: "0",
     email: "",
-    hashedPassword: "",
+    hashedPassword: ""
   });
 
   const handleChangeValue = (event) => {

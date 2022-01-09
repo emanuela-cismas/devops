@@ -6,6 +6,10 @@ import NavBar from './NavBar';
 import Slider from './Slider';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useSelector } from 'react-redux';
+import { Alert, AlertTitle } from "@material-ui/lab";
+import Snackbar from "@material-ui/core/Snackbar";
+
 const ContainerBase = styled.div`
   overflow: hidden;
 `;
@@ -49,16 +53,41 @@ const Button = styled.button`
   margin-bottom: 10px;
 `;
 export default function Animals() {
+  const isAdmin = useSelector((state) => state.isAdmin);
   const [categoryId] = React.useState(
     JSON.parse(localStorage.getItem('selectedCategory'))
   );
   const [petsData, setPetsData] = React.useState([]);
   const [sortState, setSortState] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const [petData, setPetData] = React.useState({
+    petName: "",
+    category: categoryId,
+    preferedFood: "",
+    petAge: 0,
+    adoptionFee: 0
+  });
 
   const handleChangeSort = (e) => {
     if (!sortState) petsData.sort((a, b) => a.age - b.age);
 
     setSortState(!sortState);
+  };
+
+  const clearAnimalFromList = (id) =>
+  {
+    const newList = petsData.filter((item) => item.id !== id);
+    setPetsData(newList);
+  }
+
+  const handleChangeValue = (event) => {
+    const { name, value } = event.target;
+    setPetData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setErrorMessage(false);
   };
 
   useEffect(() => {
@@ -80,7 +109,8 @@ export default function Animals() {
           }
         }
       } catch (err) {
-        if (!unmounted) console.log(err.response.data);
+        if (!unmounted) 
+          console.log(err.response.data);
       }
     };
     fetchData();
@@ -88,6 +118,31 @@ export default function Animals() {
       unmounted = true;
     };
   }, [categoryId, sortState]);
+
+  const addNewAnimal = async (e) =>
+  {
+    e.preventDefault();
+    if (petData.petName === "" || petData.preferedFood === "" ||
+      petData.adoptionFee === 0 || petData.petAge === 0)
+    {
+      setErrorMessage(true);
+      return;
+    }
+    console.log(petData);
+    let res = await axios.post("http://localhost:3001/AddPet", petData);
+    if (res.data.result === "failed") {
+      setErrorMessage(true);
+    }else{
+      petsData.push(petData);
+      setPetData({
+        petName: "",
+        preferedFood: "",
+        petAge: 0,
+        adoptionFee: 0
+      });
+      setSuccess(true);
+    }
+  };
 
   return (
     <ContainerBase>
@@ -98,18 +153,73 @@ export default function Animals() {
         control={<Checkbox checked={sortState} onChange={handleChangeSort} />}
         label="Sort animals ascending by age"
       />
-      {/* <AddContainer>
-        <NewPet placeholder="Name" type="text"></NewPet>
-        <NewPet placeholder="Prefered food" type="text"></NewPet>
-        <NewPet placeholder="Age" type="text"></NewPet>
-        <NewPet placeholder="Adoption fee" type="text"></NewPet>
-        <Button>Add</Button>
-      </AddContainer> */}
+      {isAdmin?
+      <form noValidate>
+      <AddContainer>
+        <NewPet placeholder="Pet name" id="petName"
+          name="petName"
+          required type="text"
+          onChange={handleChangeValue}
+          value={petData.petName}></NewPet>
+        <NewPet placeholder="Prefered food" id="preferedFood" 
+          name="preferedFood"
+          required type="text"
+          onChange={handleChangeValue}
+          value={petData.preferedFood}></NewPet>
+        <NewPet placeholder="Age" id="petAge" 
+          name="petAge"
+          required type="text"
+          onChange={handleChangeValue}
+          value={petData.petAge}></NewPet>
+        <NewPet placeholder="Adoption fee" id="adoptionFee" 
+          name="adoptionFee"
+          required type="text"
+          onChange={handleChangeValue}
+          value={petData.adoptionFee}></NewPet>
+        <Button type="submit" onClick={addNewAnimal}>Add</Button>
+      </AddContainer>
+      </form>
+      : ""}
       <Container>
         {petsData.map((item) => (
-          <AnimalItem item={item} key={item.id} />
+          <AnimalItem item={item} key={item.id} clearAnimalFromList={ () => clearAnimalFromList(item.id)}/>
         ))}
       </Container>
+      {
+        <Snackbar
+          open={errorMessage}
+          autoHideDuration={2000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          onClose={() => {
+            setErrorMessage(false);
+          }}
+          key={"bottom right"}
+        >
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            Pet adding error,{" "}
+            <strong>
+              empty fiels !{" "}
+            </strong>
+          </Alert>
+        </Snackbar>
+      }
+      {
+        <Snackbar
+          open={success}
+          autoHideDuration={2000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          onClose={() => {
+            setSuccess(false);
+          }}
+          key={"bottom left"}
+        >
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+             Pet added with success !
+          </Alert>
+        </Snackbar>
+      }
     </ContainerBase>
   );
 }

@@ -48,14 +48,7 @@ const Button = styled.button`
   border: teal solid 4px;
   cursor: pointer;
 `;
-// const Widget = styled.div`
-//   width: 250px;
-//   height: 50px;
-//   display: flex;
-//   font-size: 16px;
-//   justify-content: flex-end;
-//   padding: 0 5px 0 5px;
-// `;
+
 const Link = styled.a`
   text-align: center;
   cursor: pointer;

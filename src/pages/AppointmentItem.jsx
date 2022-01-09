@@ -1,7 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   border: teal solid 10px;
@@ -35,18 +37,46 @@ const ButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-export const AppointmentItem = ({ item }) => {
+export const AppointmentItem = ({ item, clearItem }) => {
+  const userId = useSelector((state) => state.userId);
+  const sendRejectRequest = async () =>
+  {
+    console.log("CLICKK");
+    let res = await axios.post("http://localhost:3001/RejectAdoptPet", {petId: item.id});
+    if (res.data.result !== "failed")
+    {
+      clearItem();
+    }
+    else
+    {
+      console.log("Request failed");
+    }
+  }
+
+  const sendAcceptReq = async () =>
+  {
+    let res = await axios.post("http://localhost:3001/AdoptPetAccepted", { userId: userId, petId: item.id});
+    if (res.data.result !== "failed")
+    {
+      clearItem();
+    }
+    else
+    {
+      console.log("Request failed");
+    }
+  }
+
   return (
     <Container>
       <Info>
-        <Title>Animal Name</Title>
-        <Title>Client Name </Title>
+        <Title>{item.name}</Title>
+        <Title>{item.nameUser}</Title>
       </Info>
       <ButtonContainer>
-        <FontAwesomeIcon icon={faX} />
+        <FontAwesomeIcon icon={faX} onClick={sendRejectRequest}/>
       </ButtonContainer>
       <ButtonContainer>
-        <FontAwesomeIcon icon={faCheck} />
+        <FontAwesomeIcon icon={faCheck} onClick={sendAcceptReq}/>
       </ButtonContainer>
     </Container>
   );
