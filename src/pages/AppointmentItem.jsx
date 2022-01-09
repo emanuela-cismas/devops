@@ -34,6 +34,7 @@ const ButtonContainer = styled.div`
   padding: 0px;
   cursor: pointer;
 `;
+
 export const AppointmentItem = ({ item }) => {
   return (
     <Container>

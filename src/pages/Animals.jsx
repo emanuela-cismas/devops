@@ -98,13 +98,13 @@ export default function Animals() {
         control={<Checkbox checked={sortState} onChange={handleChangeSort} />}
         label="Sort animals ascending by age"
       />
-      <AddContainer>
+      {/* <AddContainer>
         <NewPet placeholder="Name" type="text"></NewPet>
         <NewPet placeholder="Prefered food" type="text"></NewPet>
         <NewPet placeholder="Age" type="text"></NewPet>
         <NewPet placeholder="Adoption fee" type="text"></NewPet>
         <Button>Add</Button>
-      </AddContainer>
+      </AddContainer> */}
       <Container>
         {petsData.map((item) => (
           <AnimalItem item={item} key={item.id} />

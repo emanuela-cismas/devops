@@ -75,6 +75,7 @@ const MenuIcon = styled.div`
 export const NavBar = () => {
   const dispatch = useDispatch();
   const isLogged = useSelector((state) => state.isLogged);
+  const isAdmin = useSelector((state) => state.isAdmin);
   const history = useHistory();
   const handleLogOut = () => {
     dispatch(changeLogin(false));
@@ -137,7 +138,7 @@ export const NavBar = () => {
             <MenuIcon>
               <FontAwesomeIcon icon={faClipboardCheck} />
             </MenuIcon>
-            My Pets
+            {!isAdmin? "My Pets":"Adoptions"}
           </MenuItem>
         </RightSide>
       </Wrapper>
